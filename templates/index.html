@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Analyzer</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --text: #333;
+      --accent: #007bff;
+      --accent-hover: #0056b3;
+      --success: #28a745;
+      --success-hover: #218838;
+      --info: #17a2b8;
+      --info-hover: #138496;
+    }
+
+    [data-theme="dark"] {
+      --bg: #121212;
+      --card: #1f1f1f;
+      --text: #f5f5f5;
+      --accent: #4dabf7;
+      --accent-hover: #339af0;
+      --success: #4caf50;
+      --success-hover: #3e8e41;
+      --info: #3ac1e6;
+      --info-hover: #1ca8cc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      background-color: var(--card);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .theme-toggle {
+      width: 60px;
+      height: 30px;
+      border-radius: 50px;
+      background-color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .theme-toggle #toggle-icon {
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      line-height: 22px;
+      text-align: center;
+      font-size: 14px;
+      transition: transform 0.3s;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      flex: 1;
+      padding: 40px 20px;
+    }
+
+    form {
+      background-color: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    input[type="file"],
+    select {
+      margin: 10px 0 20px;
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    select {
+      width: 250px;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .menu-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .menu-item {
+      background-color: var(--card);
+      border-radius: 10px;
+      padding: 15px;
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .menu-item img {
+      width: 200px;
+      height: 120px;
+      object-fit: cover;
+      margin: 10px 0;
+      border-radius: 6px;
+      transition: opacity 0.3s ease;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .download-btn,
+    .change-btn,
+    .copy-btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .download-btn { background-color: var(--info); color: white; }
+    .change-btn { background-color: orange; color: white; }
+    .copy-btn { background-color: var(--success); color: white; }
+
+    .info-block {
+      font-size: 0.85rem;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .download-link {
+      text-align: center;
+      display: block;
+      margin: 20px auto 0;
+      font-weight: bold;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    footer {
+      background-color: var(--card);
+      padding: 16px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid var(--accent);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header>
+    <h1>📸 Menu Analyzer</h1>
+    <div class="theme-toggle" onclick="toggleTheme()">
+      <div id="toggle-icon">🌙</div>
+    </div>
+  </header>
+
+  <main>
+    <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+      <input type="file" name="menu_images" multiple required>
+      <label>Select Languages for Translation:</label>
+      <select name="languages" multiple required>
+        <option value="Hindi">Hindi</option>
+        <option value="Tamil">Tamil</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Kannada">Kannada</option>
+        <option value="Malayalam">Malayalam</option>
+        <option value="Gujarati">Gujarati</option>
+        <option value="Marathi">Marathi</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Punjabi">Punjabi</option>
+      </select>
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div id="loader" style="display:none;">
+      <div class="spinner"></div>
+      <p style="text-align:center;">Analyzing menu image...</p>
+    </div>
+
+    {% if items %}
+    <h2 style="text-align:center;">Extracted Items</h2>
+    <a class="download-link" href="/download">⬇ Download Excel Report</a>
+    <div class="menu-items">
+      {% for name, price, image in items %}
+      <div class="menu-item">
+        <strong>{{ name }}</strong><br>
+        <span style="color: green;">{{ price }}</span><br>
+        {% if image %}
+        <img id="img-{{ loop.index }}" src="{{ image }}" alt="{{ name }}">
+        <div class="button-group">
+          <a href="{{ image }}" download="{{ name }}.jpg">
+            <button class="download-btn">⬇ Image</button>
+          </a>
+          <button class="change-btn" onclick="changeImage('{{ name }}', 'img-{{ loop.index }}')">🔄 Change</button>
+          <button class="copy-btn" onclick="copyToClipboard('{{ name }} - {{ price }}')">📋 Copy</button>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </main>
+
+  <footer>
+    Made with ❤️ | Menu Analyzer © {{ year or "2025" }}
+  </footer>
+
+  <div id="toast"></div>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById("toggle-icon");
+      const dark = body.getAttribute("data-theme") === "dark";
+      body.setAttribute("data-theme", dark ? "light" : "dark");
+      icon.innerHTML = dark ? "🌙" : "☀️";
+      icon.style.transform = dark ? "translateX(0px)" : "translateX(30px)";
+    }
+
+    function showLoader() {
+      document.querySelector("form").style.display = "none";
+      document.getElementById("loader").style.display = "block";
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.style.opacity = 1;
+      setTimeout(() => toast.style.opacity = 0, 3000);
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => showToast("📋 Copied: " + text));
+    }
+
+    function changeImage(name, imgId) {
+      const img = document.getElementById(imgId);
+      img.style.opacity = "0.5";
+      fetch(`/change-image?name=${encodeURIComponent(name)}&rand=${Math.random()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.new_url) {
+            img.src = data.new_url + "?t=" + new Date().getTime();
+            showToast(`✅ Image updated for ${name}`);
+          } else {
+            showToast("⚠️ Couldn't fetch new image.");
+          }
+        })
+        .finally(() => img.style.opacity = "1");
+    }
+
+    window.onload = () => {
+      const icon = document.getElementById("toggle-icon");
+      const isDark = document.body.getAttribute("data-theme") === "dark";
+      icon.innerHTML = isDark ? "☀️" : "🌙";
+      icon.style.transform = isDark ? "translateX(30px)" : "translateX(0px)";
+    };
+  </script>
+</body>
+</html>
