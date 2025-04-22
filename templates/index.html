@@ -226,36 +226,36 @@
   <main>
     <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
       <input type="file" name="menu_images" multiple required>
+      
       <label>Select Languages for Translation:</label>
-      <select name="languages" multiple required>
-        <select name="language" id="language">
-          <option value="Assamese">Assamese</option>
-          <option value="Bengali">Bengali</option>
-          <option value="Bodo">Bodo</option>
-          <option value="Dogri">Dogri</option>
-          <option value="Gujarati">Gujarati</option>
-          <option value="Hindi">Hindi</option>
-          <option value="Kannada">Kannada</option>
-          <option value="Kashmiri">Kashmiri</option>
-          <option value="Konkani">Konkani</option>
-          <option value="Maithili">Maithili</option>
-          <option value="Malayalam">Malayalam</option>
-          <option value="Manipuri">Manipuri</option>
-          <option value="Marathi">Marathi</option>
-          <option value="Nepali">Nepali</option>
-          <option value="Odia">Odia</option>
-          <option value="Punjabi">Punjabi</option>
-          <option value="Sanskrit">Sanskrit</option>
-          <option value="Santali">Santali</option>
-          <option value="Sindhi">Sindhi</option>
-          <option value="Tamil">Tamil</option>
-          <option value="Telugu">Telugu</option>
-          <option value="Urdu">Urdu</option>
-        </select>
-        
+      <select name="languages" multiple required size="10" style="width: 100%;">
+        <option value="Assamese">Assamese</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Bodo">Bodo</option>
+        <option value="Dogri">Dogri</option>
+        <option value="Gujarati">Gujarati</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Kannada">Kannada</option>
+        <option value="Kashmiri">Kashmiri</option>
+        <option value="Konkani">Konkani</option>
+        <option value="Maithili">Maithili</option>
+        <option value="Malayalam">Malayalam</option>
+        <option value="Manipuri">Manipuri</option>
+        <option value="Marathi">Marathi</option>
+        <option value="Nepali">Nepali</option>
+        <option value="Odia">Odia</option>
+        <option value="Punjabi">Punjabi</option>
+        <option value="Sanskrit">Sanskrit</option>
+        <option value="Santali">Santali</option>
+        <option value="Sindhi">Sindhi</option>
+        <option value="Tamil">Tamil</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Urdu">Urdu</option>
       </select>
+      
       <button type="submit">Analyze</button>
     </form>
+    
 
     <div id="loader" style="display:none;">
       <div class="spinner"></div>
