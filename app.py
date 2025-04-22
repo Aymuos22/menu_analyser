@@ -68,6 +68,11 @@ def extract_items_from_image(image_path):
 
 def get_translation_and_info_multilang(item_name, languages):
     results = {}
+    
+    # Ensure English is included
+    if "English" not in languages:
+        languages.append("English")
+
     for lang in languages:
         prompt = (
             f"Translate the food item '{item_name}' to {lang}. "
@@ -106,7 +111,9 @@ def get_translation_and_info_multilang(item_name, languages):
         except Exception as e:
             print(f"[ERROR] Translation failed for {item_name} in {lang}:", e)
             results[lang] = {"translated": "", "description": "", "ingredients": "", "calories": ""}
+    
     return results
+
 
 def get_food_image_url(query):
     try:
